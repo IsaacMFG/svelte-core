@@ -1,2 +1,13 @@
-export { default as Component } from './Component.svelte';
+export { default as Button } from './Button.svelte';
+export { default as Checkbox } from './Checkbox.svelte';
+export { default as CheckSvg } from './CheckSVG.svelte';
+export { default as Dialog } from './Dialog.svelte';
+export { default as FileUpload } from './FileUpload.svelte';
+export { default as Input } from './Input.svelte';
+export { default as Loading } from './Loading.svelte';
+export { default as Navbar } from './Navbar.svelte';
+export { default as Progress } from './Progress.svelte';
+export { default as Select } from './Select.svelte';
+export { default as Slider } from './Slider.svelte';
+export { default as Switch } from './Switch.svelte';
 export { default as css } from './css';

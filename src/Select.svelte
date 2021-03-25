@@ -1,0 +1,328 @@
+<script lang="ts">
+    import { createEventDispatcher, tick } from 'svelte';
+    import css from './css';
+
+    // Interfaces.
+    interface SelectOption {
+        text: string;
+        value: any;
+    }
+
+    // Types.
+    type WindowClickEvent = MouseEvent & {
+        currentTarget: EventTarget & Window;
+    };
+    type SpanKeyboardEvent = KeyboardEvent & {
+        currentTarget: EventTarget & HTMLSpanElement;
+    };
+    type DivKeyboardEvent = KeyboardEvent & {
+        currentTarget: EventTarget & HTMLDivElement;
+    };
+
+    // Exported variables.
+    export let id: string = '';
+    export let placeholder: string;
+    export let options: SelectOption[];
+    export let value: any;
+    export let required: boolean = false;
+
+    // Variables.
+    const dispatch = createEventDispatcher();
+    let wrapperElement: HTMLDivElement;
+    let selectElement: HTMLDivElement;
+    let optionsElement: HTMLDivElement;
+    let selected: SelectOption;
+    let open: boolean = false;
+
+    const onWindowClick = (e: WindowClickEvent) => {
+        // If inside the select.
+        if (selectElement.contains(e.target as Node)) return;
+
+        // Else, close and fix height.
+        open = false;
+    };
+
+    const chooseOption = (option: SelectOption) => {
+        // Change selected and value, then dispatch change event.
+        selected = option;
+        value = selected.value;
+        dispatch('change', { value: selected });
+    };
+
+    const handleKeyDown = async (e: DivKeyboardEvent) => {
+        // If not tab or enter or space.
+        if (e.key !== 'Tab' && e.key !== ' ' && e.key !== 'Enter') return;
+
+        // If tab.
+        if (e.key === 'Tab') {
+            open = false;
+            return;
+        }
+
+        // Only if space or enter.
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            open = !open;
+        }
+
+        // If open, we need to focus the first option.
+        if (open) {
+            await tick();
+            const span = e.currentTarget.querySelector<HTMLElement>(
+                '.options .option:first-child'
+            );
+            span.focus();
+        }
+    };
+
+    const handleOptionKeyDown = (
+        e: SpanKeyboardEvent,
+        option: SelectOption
+    ) => {
+        // Only if space or enter.
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            chooseOption(option);
+            wrapperElement.focus();
+        }
+
+        const handleOptionChange = (up: boolean, wrap: boolean = false) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            // If already first/last.
+            const first = e.currentTarget.parentNode.firstElementChild;
+            const last = e.currentTarget.parentNode.lastElementChild;
+            if (e.currentTarget == (up ? first : last)) {
+                // If not wrapping
+                if (!wrap) return;
+
+                // If wrapping.
+                ((up ? last : first) as HTMLElement).focus();
+                return;
+            }
+
+            // Go to the previous/next one.
+            const previousNext = (up
+                ? e.currentTarget.previousElementSibling
+                : e.currentTarget.nextElementSibling) as HTMLElement;
+            previousNext.focus();
+        };
+
+        // Handle option change on up, down, and tab.
+        if (e.key === 'ArrowUp') handleOptionChange(true, false);
+        if (e.key === 'ArrowDown') handleOptionChange(false, false);
+        if (e.key === 'Tab') handleOptionChange(false, true);
+    };
+</script>
+
+<svelte:window on:click={onWindowClick} />
+
+<div
+    {id}
+    class="wrapper"
+    on:click={() => (open = !open)}
+    on:keydown={handleKeyDown}
+    bind:this={wrapperElement}
+    aria-haspopup="listbox"
+    tabindex={0}
+>
+    <div class="select" class:open bind:this={selectElement}>
+        <span class="placeholder" class:raised={open || !!selected}>
+            {placeholder || ''}
+            {required && placeholder ? '*' : ''}
+        </span>
+        <div class="value">
+            <span>{selected?.text || ''}</span>
+            <div class="arrow" />
+        </div>
+        <div
+            class="options"
+            role="listbox"
+            use:css={{ 'max-height': `${4 * options.length}rem` }}
+            bind:this={optionsElement}
+        >
+            {#each options as option}
+                <span
+                    class="option"
+                    class:selected={option === selected}
+                    tabindex={-1}
+                    role="option"
+                    on:click={() => chooseOption(option)}
+                    on:keydown={(e) => handleOptionKeyDown(e, option)}
+                >
+                    {option.text}
+                </span>
+            {/each}
+        </div>
+    </div>
+</div>
+
+<style lang="scss">
+    @use 'theme';
+
+    .wrapper {
+        position: relative;
+        user-select: none;
+        width: 100%;
+        outline: none;
+
+        &:focus {
+            border-color: transparent;
+
+            .select:after {
+                transform: scaleX(1);
+            }
+        }
+
+        .select {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 1.5rem;
+            cursor: pointer;
+            margin: 2rem auto 1rem;
+            transition: all 500ms, margin 0ms;
+            border-bottom: 2px solid black;
+
+            &:after {
+                content: '';
+                position: relative;
+                display: block;
+                height: 4px;
+                width: 100%;
+                background: linear-gradient(
+                    90deg,
+                    var(--theme-secondary, #{theme.$secondary}),
+                    var(--theme-primary, #{theme.$primary})
+                );
+                transform: scaleX(0);
+                transform-origin: top left;
+                transition: transform 0.5s ease;
+                top: 3px;
+            }
+
+            &.open {
+                border-color: transparent;
+                &:after {
+                    transform: scaleX(1);
+                }
+
+                .options {
+                    --max-height: 0;
+
+                    pointer-events: all;
+                    clip-path: inset(0 0 0 0);
+                    max-height: var(--max-height);
+
+                    .option {
+                        transition: all 500ms, pointer-events 0ms,
+                            visibility 0ms, font-size 0ms;
+                        font-size: unset;
+                    }
+                }
+
+                .value {
+                    border-bottom: 0;
+
+                    .arrow {
+                        &::before {
+                            left: -5px;
+                            transform: rotate(-45deg);
+                        }
+
+                        &::after {
+                            left: 5px;
+                            transform: rotate(45deg);
+                        }
+                    }
+                }
+            }
+
+            .placeholder {
+                position: absolute;
+                transform-origin: top left;
+                transition: transform 400ms;
+
+                &.raised {
+                    transform: scale(0.8) translateY(-1.6rem);
+                    color: #646464;
+                }
+            }
+
+            .value {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 1rem;
+
+                .arrow {
+                    position: relative;
+                    height: 15px;
+                    width: 15px;
+
+                    &::before,
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 0px;
+                        width: 0.15rem;
+                        height: 100%;
+                        transition: all 500ms;
+                        background-color: #919191;
+                    }
+
+                    &::before {
+                        left: -5px;
+                        transform: rotate(45deg);
+                    }
+
+                    &::after {
+                        left: 5px;
+                        transform: rotate(-45deg);
+                    }
+                }
+            }
+
+            .options {
+                position: absolute;
+                display: block;
+                top: calc(100% + 3px);
+                left: 0;
+                right: 0;
+                transition: all 500ms, pointer-events 0ms;
+                pointer-events: none;
+                z-index: 2;
+                background-color: white;
+                border: 2px solid #dadada;
+                border-top: 0;
+                box-sizing: border-box;
+                max-height: 0;
+                clip-path: inset(0 0 100% 0);
+
+                .option {
+                    position: relative;
+                    display: block;
+                    padding: 0.5rem;
+                    cursor: pointer;
+                    transition: all 500ms, pointer-events 0ms,
+                        font-size 0ms 500ms;
+                    outline: none;
+                    font-size: 0;
+
+                    &:hover,
+                    &:focus,
+                    &.selected {
+                        background-color: #dadada;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+</style>

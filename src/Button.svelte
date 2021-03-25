@@ -49,11 +49,13 @@
 {/if}
 
 <style lang="scss">
+    @use 'theme';
+
     a,
     button {
-        --background: var(--primary-blue);
+        --background: var(--theme-primary, #{theme.$primary});
         --color: white;
-        --hover: #0f85b3;
+        --hover: var(--theme-primary-hover, #{theme.$primary-hover});
 
         display: inline-block;
         background: var(--background);
