@@ -168,6 +168,7 @@
             })}
             required
         />
+        <p>Selected: {province}</p>
     </div>
 
     <!-- Slider -->

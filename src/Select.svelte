@@ -97,7 +97,7 @@
 
             // Select new index, or ignore if not new.
             if (index === selectedIndex) return;
-            selected = options[index];
+            chooseOption(options[index]);
         };
 
         // If arrow up or arrow down, cycle.
@@ -140,7 +140,7 @@
             }
 
             // If we need to select.
-            if (first || next) selected = next || first;
+            if (first || next) chooseOption(next || first);
 
             // Update.
             keySearch = key;
@@ -159,7 +159,7 @@
         const option = options.find(
             (o) => o.text.slice(0, temp.length).toLowerCase() === temp
         );
-        if (option) selected = option;
+        if (option) chooseOption(option);
 
         // Update.
         keySearch = temp;
