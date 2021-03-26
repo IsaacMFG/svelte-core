@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "repository": {
         "type": "git",
-        "url": "git@github.com:isaacmfg/svelte-core.git"
+        "url": "git+ssh://git@github.com/isaacmfg/svelte-core.git"
     },
     "homepage": "https://github.com/isaacmfg/svelte-core",
     "license": "MIT",
@@ -43,5 +43,14 @@
     },
     "keywords": [
         "svelte"
-    ]
+    ],
+    "description": "",
+    "bugs": {
+        "url": "https://github.com/isaacmfg/svelte-core/issues"
+    },
+    "directories": {
+        "example": "example"
+    },
+    "dependencies": {},
+    "author": ""
 }
