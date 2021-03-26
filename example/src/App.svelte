@@ -70,18 +70,13 @@
             bind:this={dialogA}
             on:close={(e) => console.log(e.detail.value)}
         >
-            <div class="complete-dialog">
-                <h1>Application Submitted</h1>
-                <p>
-                    Your application has been successfully submitted. Please
-                    note that only those selected for an audition will be
-                    contacted.
-                </p>
+            <h1>Application Submitted</h1>
+            <p>
+                Your application has been successfully submitted. Please note
+                that only those selected for an audition will be contacted.
+            </p>
 
-                <Button on:click={() => dialogA.close({ test: 'test' })}>
-                    OK
-                </Button>
-            </div>
+            <Button on:click={() => dialogA.close({ test: 'test' })}>OK</Button>
         </Dialog>
         <Button on:click={dialogA.open}>Open Dialog</Button>
     </div>

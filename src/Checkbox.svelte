@@ -35,7 +35,8 @@
                 position: relative;
                 padding-left: 2.3em;
                 font-size: 1.05em;
-                line-height: 1.7;
+                line-height: 1.4em;
+                height: calc(1.4em + 2px);
                 cursor: pointer;
 
                 &:before {
@@ -60,12 +61,16 @@
                 &:after {
                     content: '✕';
                     position: absolute;
-                    top: 0.545em;
-                    left: 0.15em;
-                    font-size: 1.375em;
+                    top: 0;
+                    left: 0;
+                    font-size: 1.4em;
                     color: var(--theme-primary, #{theme.$primary});
-                    line-height: 0;
                     transition: all 0.2s;
+                    height: calc(100% + 1px);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 1.05em;
                 }
             }
         }

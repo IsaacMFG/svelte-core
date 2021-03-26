@@ -149,6 +149,7 @@
             transform: translate(-50%, -50%);
             overflow: auto;
             display: flex;
+            flex-direction: column;
             align-items: center;
         }
     }
