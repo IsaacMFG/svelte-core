@@ -43,12 +43,15 @@
             width: 100%;
             box-sizing: border-box;
             position: relative;
-            padding-top: 30px;
+            padding: 2.5rem 0 1rem;
 
             & > input {
                 opacity: 0;
-                width: 100%;
-                position: relative;
+                width: calc(100% + 20px);
+                position: absolute;
+                left: -10px;
+                top: 17px;
+                cursor: pointer;
                 z-index: 2;
                 -webkit-appearance: none;
                 appearance: none;
@@ -76,7 +79,7 @@
                     display: inline-block;
                     position: absolute;
                     z-index: 1;
-                    top: 12px;
+                    top: 0;
                     left: 0;
                     height: 5px;
                     width: 100%;
@@ -96,7 +99,7 @@
                     position: absolute;
                     font-weight: bold;
                     text-align: center;
-                    top: -1.5rem;
+                    top: -2.35rem;
 
                     &:after {
                         content: '';

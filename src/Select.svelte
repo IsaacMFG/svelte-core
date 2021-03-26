@@ -33,6 +33,13 @@
     let optionsElement: HTMLDivElement;
     let selected: SelectOption;
     let open: boolean = false;
+    let keySearch: string = 'n';
+    let keySearchTime: number;
+    let keySearchInterval: number = 300;
+
+    // Reactives.
+    $: selectedIndex =
+        selected && options && options.findIndex((o) => o == selected);
 
     const onWindowClick = (e: WindowClickEvent) => {
         // If inside the select.
@@ -50,30 +57,113 @@
     };
 
     const handleKeyDown = async (e: DivKeyboardEvent) => {
-        // If not tab or enter or space.
-        if (e.key !== 'Tab' && e.key !== ' ' && e.key !== 'Enter') return;
-
         // If tab.
         if (e.key === 'Tab') {
             open = false;
             return;
         }
 
-        // Only if space or enter.
-        if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            e.stopPropagation();
-            open = !open;
-        }
-
-        // If open, we need to focus the first option.
-        if (open) {
+        const focusFirst = async () => {
             await tick();
             const span = e.currentTarget.querySelector<HTMLElement>(
                 '.options .option:first-child'
             );
             span.focus();
+        };
+
+        // Only if space or enter.
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            open = !open;
+            if (open) await focusFirst();
         }
+
+        const handleArrowKey = (up: boolean) => {
+            // Prevent default and stop propagation.
+            e.stopPropagation();
+            e.preventDefault();
+
+            let index = selectedIndex ?? -1;
+            if (up) {
+                // Subtract and min to 0.
+                index--;
+                if (index < 0) index = 0;
+            } else {
+                // Add and max to final option.
+                index++;
+                if (index >= options.length) index = options.length - 1;
+            }
+
+            // Select new index, or ignore if not new.
+            if (index === selectedIndex) return;
+            selected = options[index];
+        };
+
+        // If arrow up or arrow down, cycle.
+        if (e.key === 'ArrowUp') handleArrowKey(true);
+        if (e.key === 'ArrowDown') handleArrowKey(false);
+
+        // If a single letter key.
+        if (e.key.length !== 1) return;
+
+        // Prevent default and stop propagation.
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Lowercase the key.
+        const key = e.key.toLowerCase();
+
+        // Check if we need to cycle if we typed the same key.
+        if (keySearch.length > 0 && keySearch[keySearch.length - 1] === key) {
+            // Cycle.
+            let first: SelectOption;
+            let next: SelectOption;
+            for (let i = 0; i < options.length; i++) {
+                // Check if first and next are both set.
+                if (first && next) break;
+
+                // Get the first char and check if it matches our key.
+                const char = options[i].text[0].toLowerCase();
+                if (char !== key) continue;
+
+                // If we need to set first.
+                if (!first && (!selectedIndex || i < selectedIndex)) {
+                    first = options[i];
+                    continue;
+                }
+
+                // If we need to set next.
+                if (!next && (!selectedIndex || i > selectedIndex)) {
+                    next = options[i];
+                }
+            }
+
+            // If we need to select.
+            if (first || next) selected = next || first;
+
+            // Update.
+            keySearch = key;
+            keySearchTime = performance.now();
+            return;
+        }
+
+        // If not the same one, add to the search string and search.
+        const temp =
+            !keySearchTime ||
+            performance.now() - keySearchTime > keySearchInterval
+                ? key
+                : `${keySearch}${key}`;
+
+        // Try to find.
+        const option = options.find(
+            (o) => o.text.slice(0, temp.length).toLowerCase() === temp
+        );
+        if (option) selected = option;
+
+        // Update.
+        keySearch = temp;
+        keySearchTime = performance.now();
     };
 
     const handleOptionKeyDown = (
@@ -169,10 +259,12 @@
         outline: none;
 
         &:focus {
-            border-color: transparent;
+            .select {
+                border-color: transparent;
 
-            .select:after {
-                transform: scaleX(1);
+                &:after {
+                    transform: scaleX(1);
+                }
             }
         }
 
@@ -200,11 +292,12 @@
                 transform: scaleX(0);
                 transform-origin: top left;
                 transition: transform 0.5s ease;
-                top: 3px;
+                top: 0.3rem;
             }
 
             &.open {
                 border-color: transparent;
+
                 &:after {
                     transform: scaleX(1);
                 }
