@@ -135,6 +135,18 @@
                 required
             />
         </div>
+        <div>
+            <Input
+                textarea
+                id="inputC"
+                type="text"
+                placeholder="Input C (logs on:input)"
+                required
+                on:input={(v) => {
+                    console.log(v.detail.value);
+                }}
+            />
+        </div>
     </div>
 
     <!-- Loading -->

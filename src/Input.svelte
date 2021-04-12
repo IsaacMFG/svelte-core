@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { ValidationError } from 'yup';
+    import { createEventDispatcher } from 'svelte';
 
     // Types.
     type InputEvent = Event & {
@@ -31,6 +32,7 @@
 
     // Variables.
     let bindInputElement: HTMLInputElement | HTMLTextAreaElement;
+    const dispatch = createEventDispatcher();
 
     // Reactives.
     $: spanShown =
@@ -54,6 +56,8 @@
         if (hasMaxLength && value.length > maxLength) {
             value = value.slice(0, maxLength);
         }
+
+        dispatch('input', { value });
 
         // Validate with no validation.
         if (!validation) {
