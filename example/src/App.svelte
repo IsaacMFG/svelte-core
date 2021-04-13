@@ -14,6 +14,7 @@
         Switch,
         css,
     } from '@maritime-fun-group/svelte-core';
+    import { onMount } from 'svelte';
     import * as yup from 'yup';
 
     const schema = yup.string().trim().required();
@@ -164,19 +165,33 @@
     </div>
 
     <!-- Select -->
-    <h1>Select</h1>
-    <div class="inputs">
-        <Select
-            id="province"
-            bind:value={province}
-            placeholder="Province"
-            options={provinces.map((p) => {
-                return { text: p.name, value: p.abbreviation };
-            })}
-            required
-        />
-        <p>Selected: {province}</p>
-    </div>
+    <form on:submit|preventDefault={() => {}}>
+        <div class="inputs">
+            <div>
+                <Input
+                    id="test"
+                    type="text"
+                    placeholder="Input test"
+                    autocomplete="given-name"
+                    required
+                />
+            </div>
+        </div>
+        <h1>Select</h1>
+        <div class="inputs">
+            <Select
+                id="province"
+                bind:value={province}
+                placeholder="Province"
+                autocomplete="address-level1"
+                options={provinces.map((p) => {
+                    return { text: p.name, value: p.abbreviation };
+                })}
+                required
+            />
+            <p>Selected: {province}</p>
+        </div>
+    </form>
 
     <!-- Slider -->
     <h1>Slider</h1>

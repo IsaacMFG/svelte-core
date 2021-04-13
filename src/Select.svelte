@@ -24,16 +24,17 @@
     export let placeholder: string;
     export let options: SelectOption[];
     export let value: any;
+    export let selected: SelectOption;
     export let required: boolean = false;
+    export let autocomplete: string = undefined;
 
     // Variables.
     const dispatch = createEventDispatcher();
     let wrapperElement: HTMLDivElement;
     let selectElement: HTMLDivElement;
     let optionsElement: HTMLDivElement;
-    let selected: SelectOption;
     let open: boolean = false;
-    let keySearch: string = 'n';
+    let keySearch: string = '';
     let keySearchTime: number;
     let keySearchInterval: number = 300;
 
@@ -49,7 +50,7 @@
         open = false;
     };
 
-    const chooseOption = (option: SelectOption) => {
+    export const chooseOption = (option: SelectOption) => {
         // Change selected and value, then dispatch change event.
         selected = option;
         value = selected.value;
@@ -209,6 +210,25 @@
 
 <svelte:window on:click={onWindowClick} />
 
+<select
+    {autocomplete}
+    on:focus={() => wrapperElement.focus()}
+    on:blur={(e) => {
+        // If no value.
+        if (!e.currentTarget.value) return;
+
+        // Try to find/select the option based on its value.
+        const option = options.find((o) => o.value === e.currentTarget.value);
+        option && chooseOption(option);
+        e.currentTarget.value = '';
+    }}
+>
+    <option value="" />
+    {#each options as option}
+        <option value={option.value}>{option.text}</option>
+    {/each}
+</select>
+
 <div
     {id}
     class="wrapper"
@@ -251,6 +271,14 @@
 
 <style lang="scss">
     @use 'theme';
+
+    select {
+        user-select: none;
+        pointer-events: none;
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+    }
 
     .wrapper {
         position: relative;
