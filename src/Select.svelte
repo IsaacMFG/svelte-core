@@ -51,6 +51,9 @@
     };
 
     export const chooseOption = (option: SelectOption) => {
+        // Check if the value did not change.
+        if (option === selected) return;
+
         // Change selected and value, then dispatch change event.
         selected = option;
         value = selected.value;
