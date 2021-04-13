@@ -1,10 +1,24 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+
     export let id: string = null;
     export let value: boolean = false;
+
+    const dispatch = createEventDispatcher();
+
+    const handleChange = () => {
+        dispatch('input', { value });
+    };
 </script>
 
 <div class="switch">
-    <input type="checkbox" {id} bind:checked={value} on:change />
+    <input
+        type="checkbox"
+        {id}
+        bind:checked={value}
+        on:change
+        on:change={handleChange}
+    />
     <span class="back" />
     <span class="front" />
     <label class="label" for={id}>

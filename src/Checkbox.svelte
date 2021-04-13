@@ -1,16 +1,28 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
 
     export let id: string = null;
     export let checked: boolean = false;
 
+    const dispatch = createEventDispatcher();
+
     onMount(() => {
         if (!id) throw new Error('Checkbox must have an ID to work properly.');
     });
+
+    const handleChange = () => {
+        dispatch('input', { value: checked });
+    };
 </script>
 
 <div>
-    <input type="checkbox" {id} bind:checked on:change />
+    <input
+        type="checkbox"
+        {id}
+        bind:checked
+        on:change
+        on:change={handleChange}
+    />
     <label for={id}>
         <slot />
     </label>

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+
     export let min: number = 1;
     export let max: number = 100;
     export let value: number = 1;
@@ -6,8 +8,14 @@
     export let name: string = null;
 
     let input: HTMLInputElement;
+    const dispatch = createEventDispatcher();
 
     $: percentage = Math.round(((value - min) * 100) / Math.round(max - min));
+
+    const handleInput = () => {
+        dispatch('input', { value });
+        dispatch('change', { value });
+    };
 </script>
 
 <div class="slider">
@@ -20,6 +28,7 @@
             type="range"
             bind:this={input}
             bind:value
+            on:input={handleInput}
         />
         <span class="container">
             <span class="bar">
