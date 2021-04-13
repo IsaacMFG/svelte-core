@@ -203,6 +203,7 @@
             overflow: hidden;
             margin: 0;
             width: 100%;
+            font-size: 1rem;
             background: none;
             color: black;
             transition: border 500ms;
