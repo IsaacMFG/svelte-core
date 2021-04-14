@@ -27,6 +27,12 @@
     export let selected: SelectOption;
     export let required: boolean = false;
     export let autocomplete: string = undefined;
+    export let style: string = null;
+    export let wrapperStyle: string = null;
+    export let placeholderStyle: string = null;
+    export let valueStyle: string = null;
+    export let optionsStyle: string = null;
+    export let optionStyle: string = null;
 
     // Variables.
     const dispatch = createEventDispatcher();
@@ -235,24 +241,30 @@
 <div
     {id}
     class="wrapper"
+    style={wrapperStyle}
     on:click={() => (open = !open)}
     on:keydown={handleKeyDown}
     bind:this={wrapperElement}
     aria-haspopup="listbox"
     tabindex={0}
 >
-    <div class="select" class:open bind:this={selectElement}>
-        <span class="placeholder" class:raised={open || !!selected}>
+    <div class="select" class:open {style} bind:this={selectElement}>
+        <span
+            class="placeholder"
+            class:raised={open || !!selected}
+            style={placeholderStyle}
+        >
             {placeholder || ''}
             {required && placeholder ? '*' : ''}
         </span>
-        <div class="value">
+        <div class="value" style={valueStyle}>
             <span>{selected?.text || ''}</span>
             <div class="arrow" />
         </div>
         <div
             class="options"
             role="listbox"
+            style={optionsStyle}
             use:css={{ 'max-height': `${4 * options.length}rem` }}
             bind:this={optionsElement}
         >
@@ -260,6 +272,7 @@
                 <span
                     class="option"
                     class:selected={option === selected}
+                    style={optionStyle}
                     tabindex={-1}
                     role="option"
                     on:click={() => chooseOption(option)}

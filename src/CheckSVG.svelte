@@ -5,14 +5,25 @@
     export let colour: string = null;
     export let show: boolean = true;
     export let center: boolean = true;
+    export let style: string = null;
+    export let svgStyle: string = null;
 
     let className: string = '';
     export { className as class };
 </script>
 
-<div class={className} class:center use:css={{ size: `${size}px`, colour }}>
+<div
+    class={className}
+    class:center
+    {style}
+    use:css={{ size: `${size}px`, colour }}
+>
     {#if show}
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 52 52"
+            style={svgStyle}
+        >
             <circle cx="26" cy="26" r="25" fill="none" />
             <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
         </svg>

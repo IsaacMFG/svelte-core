@@ -3,6 +3,10 @@
 
     export let id: string = null;
     export let value: boolean = false;
+    export let style: string = null;
+    export let backStyle: string = null;
+    export let frontStyle: string = null;
+    export let labelStyle: string = null;
 
     const dispatch = createEventDispatcher();
 
@@ -11,7 +15,7 @@
     };
 </script>
 
-<div class="switch">
+<div class="switch" {style}>
     <input
         type="checkbox"
         {id}
@@ -19,9 +23,9 @@
         on:change
         on:change={handleChange}
     />
-    <span class="back" />
-    <span class="front" />
-    <label class="label" for={id}>
+    <span class="back" style={backStyle} />
+    <span class="front" style={frontStyle} />
+    <label class="label" style={labelStyle} for={id}>
         <slot />
     </label>
 </div>

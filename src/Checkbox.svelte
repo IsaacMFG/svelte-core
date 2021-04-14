@@ -3,6 +3,8 @@
 
     export let id: string = null;
     export let checked: boolean = false;
+    export let style: string = null;
+    export let innerStyle: string = null;
 
     const dispatch = createEventDispatcher();
 
@@ -15,7 +17,7 @@
     };
 </script>
 
-<div>
+<div {style}>
     <input
         type="checkbox"
         {id}
@@ -23,7 +25,7 @@
         on:change
         on:change={handleChange}
     />
-    <label for={id}>
+    <label for={id} style={innerStyle}>
         <slot />
     </label>
 </div>

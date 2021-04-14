@@ -19,6 +19,7 @@
     export let accept: string = null;
     export let maxSize: number = null;
     export let files: File[] = [];
+    export let style: string = null;
 
     // Reactives.
     $: acceptArray = accept.split(',');
@@ -107,7 +108,7 @@
     };
 </script>
 
-<div class="container">
+<div class="container" {style}>
     <input
         type="file"
         {multiple}

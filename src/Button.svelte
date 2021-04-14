@@ -9,6 +9,7 @@
     export let hover: string = null;
     export let a: boolean = false;
     export let type: string = null;
+    export let style: string = null;
 
     // Variables.
     let aElement: HTMLAnchorElement;
@@ -28,17 +29,19 @@
 
 {#if a || href}
     <a
+        {href}
+        {style}
+        tabindex="0"
+        role="button"
         bind:this={aElement}
         use:css={{ background, color, hover }}
         on:click
-        {href}
-        tabindex="0"
-        role="button"
     >
         <slot />
     </a>
 {:else}
     <button
+        {style}
         type={!!form && !type ? 'submit' : type || 'button'}
         bind:this={buttonElement}
         use:css={{ background, color, hover }}

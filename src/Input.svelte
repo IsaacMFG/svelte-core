@@ -26,6 +26,12 @@
     export let maxLength: number = null;
     export let cols: number = 1;
     export let rows: number = 5;
+    export let style: string = null;
+    export let inputStyle: string = null;
+    export let labelStyle: string = null;
+    export let maxLengthStyle: string = null;
+    export let errorStyle: string = null;
+    export let hintStyle: string = null;
     export let transform: (
         val: string | number
     ) => string | number | Promise<string> | Promise<number> = null;
@@ -82,6 +88,7 @@
     class:input-invalid={!valid}
     class:input-disabled={disabled}
     class:input-span-shown={spanShown}
+    {style}
     on:click={() => bindInputElement.focus()}
 >
     {#if !textarea}
@@ -95,6 +102,7 @@
             {autocomplete}
             class="input-input"
             placeholder=" "
+            style={inputStyle}
             bind:this={bindInputElement}
             on:input={handleInput}
         />
@@ -110,20 +118,28 @@
             {autocomplete}
             class="input-input"
             placeholder=" "
+            style={inputStyle}
             bind:this={bindInputElement}
             on:input={handleInput}
         />
     {/if}
-    <label for={id}>{placeholder} {required ? '*' : ''}</label>
+    <label for={id} style={labelStyle}>
+        {placeholder}
+        {required ? '*' : ''}
+    </label>
     {#if hasMaxLength}
-        <span class="input-hint-text max-length">
+        <span class="input-hint-text max-length" style={maxLengthStyle}>
             {value.length} / {maxLength}
         </span>
     {/if}
 </div>
 
 {#if !valid && (error || (validation && validationError))}
-    <span class="input-error-text" class:has-max-length={hasMaxLength}>
+    <span
+        class="input-error-text"
+        class:has-max-length={hasMaxLength}
+        style={errorStyle}
+    >
         {validation && validationError
             ? validationError
             : typeof error === 'string'
@@ -131,7 +147,11 @@
             : error(value)}
     </span>
 {:else if hint}
-    <span class="input-hint-text" class:has-max-length={hasMaxLength}>
+    <span
+        class="input-hint-text"
+        class:has-max-length={hasMaxLength}
+        style={hintStyle}
+    >
         {typeof hint === 'string' ? hint : hint(value)}
     </span>
 {/if}

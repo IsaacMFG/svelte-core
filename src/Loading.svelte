@@ -3,6 +3,8 @@
 
     export let loading: boolean = true;
     export let maxWidth: number = 150;
+    export let style: string = null;
+    export let imgStyle: string = null;
 
     const missingSpinner = () => {
         throw new Error('LOADING: Missing spinner gif @ `images/spinner.gif`.');
@@ -10,10 +12,11 @@
 </script>
 
 {#if loading}
-    <div class="loader">
+    <div class="loader" {style}>
         <img
             src="images/spinner.gif"
             alt="Spinner Gif"
+            style={imgStyle}
             use:css={{ 'max-width': `${maxWidth}px` }}
             on:error={missingSpinner}
         />

@@ -7,12 +7,18 @@
     export let foreground: string;
     export let text: boolean = false;
     export let textColor: string;
+    export let style: string = null;
+    export let barStyle: string = null;
+    export let textStyle: string = null;
 </script>
 
-<div class="progress" use:css={{ background, height: `${height}px` }}>
-    <div style="width: {progress}%" use:css={{ foreground }} />
+<div class="progress" {style} use:css={{ background, height: `${height}px` }}>
+    <div
+        style="width: {progress}%; {barStyle || ''}"
+        use:css={{ foreground }}
+    />
     {#if text}
-        <span use:css={{ textColor }}>{progress}%</span>
+        <span style={textStyle} use:css={{ textColor }}>{progress}%</span>
     {/if}
 </div>
 

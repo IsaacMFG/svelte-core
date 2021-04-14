@@ -6,6 +6,12 @@
     export let value: number = 1;
     export let id: string = null;
     export let name: string = null;
+    export let style: string = null;
+    export let containerStyle: string = null;
+    export let barStyle: string = null;
+    export let barTextStyle: string = null;
+    export let labelStyle: string = null;
+    export let labelTextStyle: string = null;
 
     let input: HTMLInputElement;
     const dispatch = createEventDispatcher();
@@ -18,7 +24,7 @@
     };
 </script>
 
-<div class="slider">
+<div class="slider" {style}>
     <span>
         <input
             {id}
@@ -30,12 +36,12 @@
             bind:value
             on:input={handleInput}
         />
-        <span class="container">
-            <span class="bar">
-                <span style="width: {percentage}%;" />
+        <span class="container" style={containerStyle}>
+            <span class="bar" style={barStyle}>
+                <span style="width: {percentage}%; {barTextStyle || ''}" />
             </span>
-            <span class="label" style="left: {percentage}%;">
-                <span>{value}</span>
+            <span class="label" style="left: {percentage}%; {labelStyle}">
+                <span style={labelTextStyle}>{value}</span>
             </span>
         </span>
     </span>
