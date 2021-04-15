@@ -90,7 +90,7 @@
 
     @keyframes fill {
         100% {
-            box-shadow: inset 0px 0px 0px 70px var(--colour);
+            box-shadow: inset 0px 0px 0px var(--size) var(--colour);
         }
     }
 </style>
