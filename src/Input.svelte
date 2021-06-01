@@ -105,6 +105,7 @@
             style={inputStyle}
             bind:this={bindInputElement}
             on:input={handleInput}
+            on:blur={() => dispatch('blur')}
         />
     {:else}
         <textarea
@@ -121,6 +122,7 @@
             style={inputStyle}
             bind:this={bindInputElement}
             on:input={handleInput}
+            on:blur={() => dispatch('blur')}
         />
     {/if}
     <label for={id} style={labelStyle}>
